@@ -13,6 +13,7 @@ namespace SimpleAPI.Models
 
     public class MyModel
     {
+        public int Id { get; set; }
         public string Proprietà1 { get; set; }
         public int Proprietà2 { get; set; }
         // Aggiungi altre proprietà se necessario
