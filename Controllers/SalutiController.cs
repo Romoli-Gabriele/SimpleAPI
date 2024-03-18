@@ -71,5 +71,21 @@ namespace SimpleAPI.Controllers
 
             return Ok(modello);
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var modello = _context.MyModels.FirstOrDefault(m => m.Id == id);
+
+            if (modello == null)
+            {
+                return NotFound("Modello non trovato.");
+            }
+
+            _context.MyModels.Remove(modello);
+            _context.SaveChanges();
+
+            return Ok("Modello eliminato.");
+        }
     }
 }
