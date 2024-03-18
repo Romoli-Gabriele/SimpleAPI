@@ -1,15 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 
+
 namespace SimpleAPI.Models
 {
-    public class AppDbContext : DbContext
-    {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-        }
+    using Microsoft.EntityFrameworkCore;
 
-        public DbSet<MyModel> MyEntities { get; set; }
+    public class AppDbContext : DbContext
+{
+    public DbSet<MyModel> MyModels { get; set; }
+    // Aggiungi altre DbSet per le tue entità qui
+
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
     }
+}
 
     public class MyModel
     {

@@ -1,18 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleAPI.Models;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-    Console.WriteLine($"Connection string: {connection}");
-    options.UseSqlServer(connection);
+    string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
+
 
 
 var app = builder.Build();
