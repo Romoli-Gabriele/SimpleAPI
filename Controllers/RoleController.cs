@@ -1,20 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using SimpleAPI.Models;
-using System;
 
 namespace SimpleAPI.Controllers
-
-
-
 {
     [ApiController]
     [Route("[controller]")]
-    public class SalutiController : ControllerBase
-    {
 
+    public class RoleController : ControllerBase
+    {
         private readonly AppDbContext _context;
 
-        public SalutiController(AppDbContext context)
+        public RoleController(AppDbContext context)
         {
             _context = context;
         }
@@ -22,14 +18,14 @@ namespace SimpleAPI.Controllers
         [HttpGet]
         public IActionResult GetAllModels()
         {
-            var models = _context.MyModels.ToList();
+            var models = _context.Roles.ToList();
             return Ok(models);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetModelById(int id)
         {
-            var model = _context.MyModels.FirstOrDefault(m => m.Id == id);
+            var model = _context.Roles.FirstOrDefault(m => m.Id == id);
 
             if (model == null)
             {
@@ -40,52 +36,57 @@ namespace SimpleAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] MyModel model)
+        public IActionResult Post([FromBody] Role role)
         {
-            if (model == null)
+            if (role == null)
             {
                 return BadRequest("Il corpo della richiesta non è valido.");
             }
 
-            _context.MyModels.Add(model);
+            _context.Roles.Add(role);
             _context.SaveChanges();
 
-            // Utilizza il modello per accedere alle proprietà del JSON
-            return Ok($"Valore ricevuto: {model.Proprietà1}, {model.Proprietà2}");
+            return CreatedAtAction(nameof(GetModelById), new { id = role.Id }, role);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] MyModel model)
+        public IActionResult Put(int id, [FromBody] Role role)
         {
-            var modello = _context.MyModels.FirstOrDefault(m => m.Id == id);
+            if (role == null || role.Id != id)
+            {
+                return BadRequest("Il corpo della richiesta non è valido.");
+            }
 
-            if (modello == null)
+            var existingRole = _context.Roles.FirstOrDefault(m => m.Id == id);
+
+            if (existingRole == null)
             {
                 return NotFound("Modello non trovato.");
             }
 
-            modello.Proprietà1 = model.Proprietà1;
-            modello.Proprietà2 = model.Proprietà2;
+            existingRole.Name = role.Name;
+            existingRole.Slug = role.Slug;
 
+            _context.Roles.Update(existingRole);
             _context.SaveChanges();
 
-            return Ok(modello);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var modello = _context.MyModels.FirstOrDefault(m => m.Id == id);
+            var model = _context.Roles.FirstOrDefault(m => m.Id == id);
 
-            if (modello == null)
+            if (model == null)
             {
                 return NotFound("Modello non trovato.");
             }
 
-            _context.MyModels.Remove(modello);
+            _context.Roles.Remove(model);
             _context.SaveChanges();
 
-            return Ok("Modello eliminato.");
+            return NoContent();
         }
     }
 }

@@ -11,8 +11,8 @@ using SimpleAPI.Models;
 namespace SimpleAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240318092312_MyModel")]
-    partial class MyModel
+    [Migration("20240318110049_User")]
+    partial class User
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace SimpleAPI.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("SimpleAPI.Models.MyModel", b =>
+            modelBuilder.Entity("SimpleAPI.Models.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,16 +32,44 @@ namespace SimpleAPI.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Proprietà1")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Proprietà2")
+                    b.Property<int>("Slug")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("MyModels");
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("SimpleAPI.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }
