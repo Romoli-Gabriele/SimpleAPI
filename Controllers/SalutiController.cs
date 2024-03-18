@@ -11,16 +11,32 @@ namespace SimpleAPI.Controllers
     [Route("[controller]")]
     public class SalutiController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Get()
+
+        private readonly AppDbContext _context;
+
+        public SalutiController(AppDbContext context)
         {
-            return Ok("Ciao, mondo!");
+            _context = context;
         }
 
-        [HttpGet("{nome}")]
-        public IActionResult Get(string nome)
+        [HttpGet]
+        public IActionResult GetAllModels()
         {
-            return Ok($"Ciao, {nome}!");
+            var models = _context.MyModels.ToList();
+            return Ok(models);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetModelById(int id)
+        {
+            var model = _context.MyModels.FirstOrDefault(m => m.Id == id);
+
+            if (model == null)
+            {
+                return NotFound("Modello non trovato.");
+            }
+
+            return Ok(model);
         }
 
         [HttpPost]
@@ -30,6 +46,9 @@ namespace SimpleAPI.Controllers
             {
                 return BadRequest("Il corpo della richiesta non è valido.");
             }
+
+            _context.MyModels.Add(model);
+            _context.SaveChanges();
 
             // Utilizza il modello per accedere alle proprietà del JSON
             return Ok($"Valore ricevuto: {model.Proprietà1}, {model.Proprietà2}");
