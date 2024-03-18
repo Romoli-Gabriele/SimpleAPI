@@ -53,5 +53,23 @@ namespace SimpleAPI.Controllers
             // Utilizza il modello per accedere alle proprietà del JSON
             return Ok($"Valore ricevuto: {model.Proprietà1}, {model.Proprietà2}");
         }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] MyModel model)
+        {
+            var modello = _context.MyModels.FirstOrDefault(m => m.Id == id);
+
+            if (modello == null)
+            {
+                return NotFound("Modello non trovato.");
+            }
+
+            modello.Proprietà1 = model.Proprietà1;
+            modello.Proprietà2 = model.Proprietà2;
+
+            _context.SaveChanges();
+
+            return Ok(modello);
+        }
     }
 }
